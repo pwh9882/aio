@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const GetMaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
