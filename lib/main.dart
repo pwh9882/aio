@@ -37,16 +37,38 @@ class MyListDrawer extends GetView<ListDrawerController> {
 
   @override
   Widget build(BuildContext context) {
+    final isLargeScreen = MediaQuery.of(context).size.width > 600;
+
     return GetBuilder<ListDrawerController>(
       builder: (_) => ZoomDrawer(
+        style: DrawerStyle.defaultStyle,
         controller: _.zoomDrawerController,
-        menuScreen: const ListMenuScreen(),
-        mainScreen: const MainScreen(),
+        menuScreen: isLargeScreen ? Container() : const ListMenuScreen(),
+        mainScreen: isLargeScreen
+            ? const Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: ListMenuScreen(),
+                  ),
+                  Expanded(
+                    flex: 6,
+                    child: MainScreen(),
+                  ),
+                ],
+              )
+            : const MainScreen(),
         borderRadius: 24.0,
-        showShadow: true,
-        angle: -12.0,
+        showShadow: false,
+        angle: 0.0,
         drawerShadowsBackgroundColor: Colors.grey,
-        slideWidth: MediaQuery.of(context).size.width * 0.65,
+        slideWidth: MediaQuery.of(context).size.width * 0.75,
+        dragOffset: MediaQuery.of(context).size.width * 0.5,
+        mainScreenTapClose: true,
+        mainScreenScale: 0.1,
+        disableDragGesture: isLargeScreen ? true : false,
+        closeCurve: Curves.easeInOut,
+        openCurve: Curves.easeInOut,
       ),
     );
   }
