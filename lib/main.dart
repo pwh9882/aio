@@ -1,4 +1,5 @@
 import 'package:aio/controllers/theme_controller.dart';
+import 'package:aio/themes/app_theme.dart';
 import 'package:aio/views/widgets/theme_change_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,11 +18,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
-      darkTheme: ThemeData.dark(),
+      title: 'AIO',
+      theme: lightTheme,
+      darkTheme: darkTheme,
       themeMode: themeController.theme,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -60,7 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
-    debugPrint('Get.isDarkMode from build: ${Get.isDarkMode}');
 
     // 이 메서드는 setState가 호출될 때마다 다시 실행됩니다.
     // 예를 들어 _incrementCounter 메서드에서 수행됩니다.
@@ -68,10 +66,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // 플러터 프레임워크는 빌드 메서드를 다시 실행해야 하는 위젯의 인스턴스를 개별적으로 변경하는 대신,
     // 업데이트가 필요한 모든 것을 다시 빌드하는 것을 가능하게하는 최적화되었습니다.
     return Scaffold(
+      backgroundColor: context.theme.colorScheme.background,
       appBar: AppBar(
         // App.build 메서드에서 생성된 MyHomePage 객체에서 값을 가져와서
         // 앱바 제목으로 설정합니다.
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
       ),
       body: Center(
         // Center는 레이아웃 위젯입니다. 하나의 자식을 가지고 있으며,
