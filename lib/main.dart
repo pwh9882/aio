@@ -38,7 +38,7 @@ class MyListDrawer extends GetView<ListDrawerController> {
   @override
   Widget build(BuildContext context) {
     final isLargeScreen = MediaQuery.of(context).size.width > 600;
-
+    isLargeScreen ? controller.zoomDrawerController.close?.call() : null;
     return GetBuilder<ListDrawerController>(
       builder: (_) => ZoomDrawer(
         style: DrawerStyle.defaultStyle,
@@ -48,11 +48,11 @@ class MyListDrawer extends GetView<ListDrawerController> {
             ? const Row(
                 children: [
                   Expanded(
-                    flex: 4,
+                    flex: 1,
                     child: ListMenuScreen(),
                   ),
                   Expanded(
-                    flex: 6,
+                    flex: 2,
                     child: MainScreen(),
                   ),
                 ],

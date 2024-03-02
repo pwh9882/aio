@@ -9,4 +9,10 @@ class ListDrawerController extends GetxController {
     zoomDrawerController.toggle?.call();
     update();
   }
+
+  void closeDrawer() {
+    // print("Close drawer");
+    zoomDrawerController.close?.call();
+    update();
+  }
 }
