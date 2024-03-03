@@ -1,7 +1,7 @@
 import 'package:aio/controllers/theme_controller.dart';
 import 'package:aio/views/widgets/custom_main_drawer.dart';
-import 'package:aio/views/widgets/custom_menu_drawer.dart';
-import 'package:aio/views/widgets/theme_change_button.dart';
+import 'package:aio/views/widgets/menu_drawer/custom_menu_drawer.dart';
+import 'package:aio/views/widgets/menu_drawer/theme_change_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

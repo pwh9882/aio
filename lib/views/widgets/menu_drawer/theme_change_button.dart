@@ -1,4 +1,5 @@
 import 'package:aio/themes/app_theme.dart';
+import 'package:aio/themes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:aio/controllers/theme_controller.dart';
@@ -10,19 +11,21 @@ class ThemeChangeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = themeController.theme == ThemeMode.dark;
+    const materialTheme = MaterialTheme(TextTheme());
     return IconButton(
       icon: Icon(
-          Get.isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-          color: context.theme.colorScheme.onBackground),
+          isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+          color: Theme.of(context).colorScheme.onBackground),
       onPressed: () {
         // debugPrint('Get.isDarkMode: ${Get.isDarkMode}');
-        if (themeController.theme == ThemeMode.dark) {
+        if (isDarkMode) {
           themeController.saveTheme(false);
-          Get.changeTheme(lightTheme);
+          Get.changeTheme(materialTheme.light());
           Get.changeThemeMode(ThemeMode.light);
         } else {
           themeController.saveTheme(true);
-          themeController.changeTheme(darkTheme);
+          themeController.changeTheme(materialTheme.dark());
         }
       },
     );

@@ -1,5 +1,4 @@
 import 'package:aio/controllers/theme_controller.dart';
-import 'package:aio/themes/app_theme.dart';
 import 'package:aio/themes/theme.dart';
 import 'package:aio/views/screens/main_screen.dart';
 import 'package:aio/views/screens/menu_screen.dart';
