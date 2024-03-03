@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:aio/views/screens/menu_screen.dart';
 import 'package:flutter/material.dart';
 
 class CustomMenuDrawer extends StatefulWidget {
@@ -57,13 +58,7 @@ class CustomMenuDrawerState extends State<CustomMenuDrawer>
           // Drawer contents go here
           width: screenWidth * 0.7,
           backgroundColor: Colors.indigo,
-          child: const Column(
-            children: [
-              Text('Item 1'),
-              Text('Item 2'),
-              Text('Item 3'),
-            ],
-          ),
+          child: const MenuScreen(),
         ),
       ),
     );

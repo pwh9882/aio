@@ -1,5 +1,4 @@
 import 'package:aio/controllers/theme_controller.dart';
-import 'package:aio/views/screens/list_menu_screen.dart';
 import 'package:aio/views/widgets/custom_main_drawer.dart';
 import 'package:aio/views/widgets/custom_menu_drawer.dart';
 import 'package:aio/views/widgets/theme_change_button.dart';
@@ -12,24 +11,15 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLargeScreen = MediaQuery.of(context).size.width > 600;
-    // 열린 custom drawer 닫기
 
     return Scaffold(
-      body: isLargeScreen
-          ? const Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: ListMenuScreen(),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Center(child: MyHomePage(title: "drawer test")),
-                ),
-              ],
-            )
-          : const Center(child: MyHomePage(title: "drawer test")),
-    );
+        backgroundColor: context.theme.colorScheme.background,
+        drawer: isLargeScreen ? null : const CustomMenuDrawer(),
+        endDrawer: const CustomMainDrawer(),
+        drawerEdgeDragWidth: isLargeScreen
+            ? MediaQuery.of(context).size.width
+            : MediaQuery.of(context).size.width * 0.5,
+        body: const Center(child: MyHomePage(title: 'Flutter Demo Home Page')));
   }
 }
 
@@ -65,8 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
-    final isLargeScreen = MediaQuery.of(context).size.width > 600;
-    // 열린 custom drawer 닫기
+
     // 이 메서드는 setState가 호출될 때마다 다시 실행됩니다.
     // 예를 들어 _incrementCounter 메서드에서 수행됩니다.
     return Scaffold(
@@ -77,11 +66,6 @@ class _MyHomePageState extends State<MyHomePage> {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),
-      drawer: isLargeScreen ? null : const CustomMenuDrawer(),
-      endDrawer: const CustomMainDrawer(),
-      drawerEdgeDragWidth: isLargeScreen
-          ? MediaQuery.of(context).size.width
-          : MediaQuery.of(context).size.width * 0.5,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

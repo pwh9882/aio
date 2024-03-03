@@ -14,6 +14,7 @@ class LightColors {
   static const Color gray4 = Color(0xFFDFE1E4);
   static const Color gray5 = Color(0xFF767676);
   static const Color gray6 = Color(0xFF4D4D4D);
+  static const Color gray7 = Color(0xFF2D2D2D);
   static const Color important = Color(0xFF2D2D2D);
 }
 
@@ -29,6 +30,7 @@ class DarkColors {
   static const Color gray4 = Color(0xFF4D4D4D);
   static const Color gray5 = Color(0xFFAFAFAF);
   static const Color gray6 = Color(0xFFDCDCDC);
+  static const Color gray7 = Color(0xFF2D2D2D);
   static const Color important = Color(0xFFFFFFFF);
 }
 

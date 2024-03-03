@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ListMenuScreen extends StatelessWidget {
-  const ListMenuScreen({Key? key}) : super(key: key);
+class MenuScreen extends StatelessWidget {
+  const MenuScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: context.theme.colorScheme.primary,
+        backgroundColor: context.theme.colorScheme.primaryContainer,
         body: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
