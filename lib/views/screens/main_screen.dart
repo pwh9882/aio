@@ -1,5 +1,6 @@
 import 'package:aio/controllers/list_drawer_controller.dart';
 import 'package:aio/controllers/theme_controller.dart';
+import 'package:aio/views/widgets/custom_main_drawer.dart';
 import 'package:aio/views/widgets/theme_change_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -62,6 +63,8 @@ class _MyHomePageState extends State<MyHomePage> {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),
+      endDrawer: const CustomMainDrawer(),
+      drawerEdgeDragWidth: MediaQuery.of(context).size.width * 0.5,
       body: Center(
         // Center는 레이아웃 위젯입니다. 하나의 자식을 가지고 있으며,
         // 부모의 가운데에 위치시킵니다.
