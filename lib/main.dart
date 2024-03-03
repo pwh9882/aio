@@ -41,7 +41,7 @@ class MyListDrawer extends GetView<ListDrawerController> {
     isLargeScreen ? controller.zoomDrawerController.close?.call() : null;
     return GetBuilder<ListDrawerController>(
       builder: (_) => ZoomDrawer(
-        style: DrawerStyle.defaultStyle,
+        // style: DrawerStyle.defaultStyle,
         controller: _.zoomDrawerController,
         menuScreen: isLargeScreen ? Container() : const ListMenuScreen(),
         mainScreen: isLargeScreen
@@ -58,17 +58,38 @@ class MyListDrawer extends GetView<ListDrawerController> {
                 ],
               )
             : const MainScreen(),
-        borderRadius: 24.0,
+        // borderRadius: 24.0,
         showShadow: false,
-        angle: 0.0,
+        // angle: 0.0,
         drawerShadowsBackgroundColor: Colors.grey,
-        slideWidth: MediaQuery.of(context).size.width * 0.75,
+        slideWidth: MediaQuery.of(context).size.width * 0.7,
         dragOffset: MediaQuery.of(context).size.width * 0.5,
         mainScreenTapClose: true,
-        mainScreenScale: 0.1,
+        // mainScreenScale: 0,
         disableDragGesture: isLargeScreen ? true : false,
         closeCurve: Curves.easeInOut,
-        openCurve: Curves.easeInOut,
+        // openCurve: Curves.easeInOut,
+        // shrinkMainScreen: true,
+        drawerStyleBuilder:
+            (context, animationValue, slideWidth, menuScreen, mainScreen) {
+          double slide = slideWidth * animationValue - 50 * animationValue;
+          double menuScreenOffset =
+              0; // Adjust the value as neededide width by 50
+
+          return Stack(
+            children: [
+              Transform.translate(
+                offset: Offset(menuScreenOffset, 0),
+                child: menuScreen,
+              ),
+              Transform(
+                transform: Matrix4.identity()..translate(slide),
+                alignment: Alignment.center,
+                child: mainScreen,
+              ),
+            ],
+          );
+        },
       ),
     );
   }

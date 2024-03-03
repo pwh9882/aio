@@ -9,6 +9,9 @@ class ListMenuScreen extends GetView<ListDrawerController> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.indigo,
+      child: const Column(
+        children: [Text('ListMenuScreen')],
+      ),
     );
   }
 }
