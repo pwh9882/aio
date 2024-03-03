@@ -1,17 +1,18 @@
-import 'package:aio/controllers/list_drawer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ListMenuScreen extends GetView<ListDrawerController> {
+class ListMenuScreen extends StatelessWidget {
   const ListMenuScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.indigo,
-      child: const Column(
-        children: [Text('ListMenuScreen')],
-      ),
-    );
+    return Scaffold(
+        backgroundColor: context.theme.colorScheme.primary,
+        body: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Menuasdf"),
+          ],
+        ));
   }
 }
