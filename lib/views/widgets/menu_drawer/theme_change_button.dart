@@ -1,4 +1,3 @@
-import 'package:aio/themes/app_theme.dart';
 import 'package:aio/themes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
