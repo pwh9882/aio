@@ -5,7 +5,6 @@ class BoardTab implements SpaceItem {
   final String id;
   String title;
   String url;
-  String? parentFolderId;
 
   String boardType;
 
