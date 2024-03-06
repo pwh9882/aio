@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class SpacePageView extends StatefulWidget {
-  const SpacePageView({Key? key}) : super(key: key);
+  const SpacePageView({super.key});
 
   @override
-  _SpacePageViewState createState() => _SpacePageViewState();
+  State<SpacePageView> createState() => _SpacePageViewState();
 }
 
 class _SpacePageViewState extends State<SpacePageView>

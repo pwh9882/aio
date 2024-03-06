@@ -1,9 +1,22 @@
 import 'dart:math' as math;
-import 'package:aio/views/screens/menu_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:aio/views/screens/menu_screen.dart';
+
+class MenuDrawerController extends GetxController {
+  var offset = 0.0.obs;
+
+  void updateOffset(double newOffset) {
+    offset.value = newOffset;
+  }
+
+  void resetOffset() {
+    offset.value = 0.0;
+  }
+}
 
 class CustomMenuDrawer extends StatefulWidget {
-  const CustomMenuDrawer({Key? key}) : super(key: key);
+  const CustomMenuDrawer({super.key});
 
   @override
   CustomMenuDrawerState createState() => CustomMenuDrawerState();
@@ -11,22 +24,21 @@ class CustomMenuDrawer extends StatefulWidget {
 
 class CustomMenuDrawerState extends State<CustomMenuDrawer>
     with SingleTickerProviderStateMixin {
-  double _offset = 0.0;
   late AnimationController _animationController;
   late Animation<double> _animation;
+  final MenuDrawerController controller = Get.put(MenuDrawerController());
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 300),
     );
-    _animation = Tween<double>(begin: 0, end: 0).animate(_animationController)
+    _animation = Tween<double>(begin: 0, end: 0).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut))
       ..addListener(() {
-        setState(() {
-          _offset = _animation.value;
-        });
+        controller.updateOffset(_animation.value);
       });
   }
 
@@ -39,26 +51,30 @@ class CustomMenuDrawerState extends State<CustomMenuDrawer>
         _animationController.stop();
       },
       onHorizontalDragUpdate: (details) {
-        // debugPrint("offset: $_offset");
-        setState(() {
-          _offset = math.min(0.0, _offset + details.delta.dx);
-        });
+        double newOffset =
+            math.min(0.0, controller.offset.value + details.delta.dx);
+        controller.updateOffset(newOffset);
       },
       onHorizontalDragEnd: (details) {
-        if (_offset < -10) {
+        if (controller.offset.value < -10) {
           Navigator.pop(context);
         }
-        _animation =
-            Tween<double>(begin: _offset, end: 0).animate(_animationController);
+        _animation = Tween<double>(begin: controller.offset.value, end: 0)
+            .animate(CurvedAnimation(
+                parent: _animationController, curve: Curves.easeOut))
+          ..addListener(() {
+            controller.updateOffset(_animation.value);
+          });
         _animationController.forward(from: 0.0);
       },
-      child: Transform.translate(
-        offset: Offset(_offset, 0.0),
-        child: Drawer(
-          // Drawer contents go here
-          width: screenWidth * 0.7,
-          backgroundColor: Colors.indigo,
-          child: const MenuScreen(),
+      child: Obx(
+        () => Transform.translate(
+          offset: Offset(controller.offset.value, 0.0),
+          child: Drawer(
+            width: screenWidth * 0.7,
+            backgroundColor: Colors.indigo,
+            child: const MenuScreen(),
+          ),
         ),
       ),
     );
