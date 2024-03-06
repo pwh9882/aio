@@ -6,6 +6,9 @@ class Space {
   String name; // Added name property
   List<SpaceItem> items;
 
+  // db에 저장되지 않음, 마지막으로 선택된 아이템
+  SpaceItem? lastSelectedItem;
+
   Space(
       {required this.id,
       required this.name,
@@ -20,16 +23,13 @@ class Space {
 
   // Convert Space instance to Map for database storage
   Map<String, dynamic> toMap() {
-    var position = 0;
     return {
       'id': id,
       'name': name, // Added name field
       'items': items.map((item) {
         return {
-          'space_id': id,
           'type': item.type.toString(),
           'reference_id': item.id,
-          'position': position++,
         };
       }).toList(),
     };

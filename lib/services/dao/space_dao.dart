@@ -1,47 +1,27 @@
+import 'package:aio/models/folder.dart';
 import 'package:aio/models/space.dart';
 import 'package:aio/models/space_item.dart';
+import 'package:aio/models/tab.dart';
 import 'package:aio/services/dao/database_helper.dart';
 import 'package:aio/services/dao/folder_dao.dart';
 import 'package:aio/services/dao/tab_dao.dart';
-import 'package:sqflite/sql.dart';
 
 class SpaceDAO {
   final dbProvider = DatabaseHelper.instance;
 
-  // Insert a Space instance to the database
-  Future<void> insertSpace(Space space) async {
+  // Insert a Space instance to the database: 빈 space만 사용해야함.
+  Future<int> insertSpace(Space space) async {
     final db = await dbProvider.database;
-    final batch = db.batch();
 
-    // Update or insert the space record
-    batch.insert(
-      'spaces',
-      {'id': space.id, 'name': space.name},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-
-    // Clear existing items for this space
-    batch.delete(
-      'space_items',
-      where: 'space_id = ?',
-      whereArgs: [space.id],
-    );
-
-    // Insert new items
-    var position = 0;
-    for (var item in space.items) {
-      batch.insert(
-        'space_items',
-        {
-          'space_id': space.id,
-          'type': item.type.toString(),
-          'reference_id': item.id,
-          'position': position++,
-        },
-      );
-    }
-
-    await batch.commit();
+    // // Insert child items
+    // for (var item in space.items) {
+    //   if (item is Folder) {
+    //     await FolderDAO().insertFolder(item);
+    //   } else if (item is Tab) {
+    //     await TabDAO().insertTab(item);
+    //   }
+    // }
+    return await db.insert('spaces', space.toMap());
   }
 
   // Get a Space instance from the database
@@ -61,22 +41,19 @@ class SpaceDAO {
 
     final spaceMap = spaceMaps.first;
 
-    // Get the space items
-    final List<Map<String, dynamic>> itemMaps = await db.query(
-      'space_items',
-      where: 'space_id = ?',
-      orderBy: 'position',
-      whereArgs: [spaceId],
-    );
+    var itemIds = spaceMap['items'] as List<Map<String, dynamic>>;
 
     var items = <SpaceItem>[];
-    for (var map in itemMaps) {
-      if (map['type'] == 'SpaceItemType.tab') {
-        var tab = await TabDAO().getTabById(map['reference_id']);
+    for (var item in itemIds) {
+      String itemType = item['type'];
+      String itemId = item['reference_id'];
+
+      if (itemType == 'SpaceItemType.tab') {
+        var tab = await TabDAO().getTabById(itemId);
         items.add(tab);
-      } else if (map['type'] == 'SpaceItemType.folder') {
-        var folder = await FolderDAO().getFolderById(map['reference_id']);
-        items.add(folder);
+      } else if (itemType == 'SpaceItemType.folder') {
+        var childFolder = await FolderDAO().getFolderById(itemId);
+        items.add(childFolder);
       }
     }
 
@@ -99,19 +76,36 @@ class SpaceDAO {
     return spaces;
   }
 
+  // Update a space
+  Future<int> updateSpace(Space space) async {
+    final db = await dbProvider.database;
+
+    return await db.update(
+      'spaces',
+      space.toMap(),
+      where: 'id = ?',
+      whereArgs: [space.id],
+    );
+  }
+
   // Delete a space
   Future<void> deleteSpaceById(String spaceId) async {
     final db = await dbProvider.database;
 
+    // first delete all child items
+    var space = await getSpaceById(spaceId);
+
+    for (var item in space.items) {
+      if (item is Folder) {
+        await FolderDAO().deleteFolderById(item.id);
+      } else if (item is Tab) {
+        await TabDAO().deleteTabById(item.id);
+      }
+    }
+
     await db.delete(
       'spaces',
       where: 'id = ?',
-      whereArgs: [spaceId],
-    );
-
-    await db.delete(
-      'space_items',
-      where: 'space_id = ?',
       whereArgs: [spaceId],
     );
   }

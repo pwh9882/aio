@@ -16,7 +16,6 @@ class BoardTab implements SpaceItem {
     required this.id,
     required this.title,
     required this.url,
-    this.parentFolderId,
     required this.boardType,
     required this.boardInfo,
   });
@@ -24,12 +23,12 @@ class BoardTab implements SpaceItem {
   @override
   SpaceItemType get type => SpaceItemType.boardTab;
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'title': title,
       'url': url,
-      'parentFolderId': parentFolderId,
       'boardType': boardType,
       'boardInfo': boardInfo,
     };
