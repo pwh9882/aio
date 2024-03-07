@@ -14,7 +14,7 @@ class MainScreen extends StatelessWidget {
 
     return Scaffold(
         backgroundColor: context.theme.colorScheme.background,
-        drawer: isLargeScreen ? null : CustomMenuDrawer(),
+        drawer: isLargeScreen ? null : const CustomMenuDrawer(),
         endDrawer: const CustomMainDrawer(),
         drawerEdgeDragWidth: isLargeScreen
             ? MediaQuery.of(context).size.width
