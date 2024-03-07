@@ -1,3 +1,4 @@
+import 'package:aio/controllers/space_page_view_controller.dart';
 import 'package:aio/views/widgets/menu_drawer/menu_shortcut_bar.dart';
 import 'package:aio/views/widgets/menu_drawer/menu_space_indicate_bar.dart';
 import 'package:aio/views/widgets/menu_drawer/menu_top_bar.dart';
@@ -10,6 +11,8 @@ class MenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(SpacePageViewController());
+
     return Scaffold(
         backgroundColor: context.theme.colorScheme.primaryContainer,
         body: Column(
