@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aio/models/folder.dart';
 import 'package:aio/models/space_item.dart';
 import 'package:aio/services/dao/database_helper.dart';
@@ -10,15 +12,6 @@ class FolderDAO {
   Future<int> insertFolder(Folder folder) async {
     final db = await dbProvider.database;
     final folderId = await db.insert('folders', folder.toMap());
-
-    // // Insert child folders and their items
-    // for (var item in folder.items) {
-    //   if (item is Folder) {
-    //     await insertFolder(item);
-    //   } else if (item is Tab) {
-    //     await TabDAO().insertTab(item);
-    //   }
-    // }
 
     return folderId;
   }
@@ -39,19 +32,22 @@ class FolderDAO {
     }
 
     var folderMap = folderMaps.first;
-    var itemIds = (folderMap['items'] as List).cast<Map<String, dynamic>>();
 
     var items = <SpaceItem>[];
-    for (var item in itemIds) {
-      String itemType = item['type'];
-      String itemId = item['reference_id'];
+    if (folderMap['items'] != null) {
+      var itemData = jsonDecode(folderMap['items']) as List;
+      for (var item in itemData) {
+        String itemType = item['type'];
+        String itemId = item['reference_id'];
 
-      if (itemType == 'SpaceItemType.tab') {
-        var tab = await TabDAO().getTabById(itemId);
-        items.add(tab);
-      } else if (itemType == 'SpaceItemType.folder') {
-        var childFolder = await getFolderById(itemId);
-        items.add(childFolder);
+        if (itemType == 'SpaceItemType.tab') {
+          var tab = await TabDAO().getTabById(itemId);
+          items.add(tab);
+        } else if (itemType == 'SpaceItemType.folder') {
+          var folder = await FolderDAO().getFolderById(itemId);
+          items.add(folder);
+        }
+        // Add other SpaceItem types here
       }
     }
 

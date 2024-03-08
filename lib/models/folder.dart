@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aio/models/space_item.dart';
 import 'package:uuid/uuid.dart';
 
@@ -36,12 +38,7 @@ class Folder implements SpaceItem {
       'type':
           SpaceItemType.folder.toString(), // 'folder' -> 'SpaceItemType.folder
       'name': name,
-      'items': items.map((item) {
-        return {
-          'reference_id': item.id,
-          'type': item.type.toString(),
-        };
-      }).toList(),
+      'items': jsonEncode(items.map((item) => item.toMap()).toList()),
     };
   }
 }
