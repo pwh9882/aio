@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aio/models/space_item.dart';
 import 'package:uuid/uuid.dart';
 
@@ -25,13 +27,8 @@ class Space {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'name': name, // Added name field
-      'items': items.map((item) {
-        return {
-          'type': item.type.toString(),
-          'reference_id': item.id,
-        };
-      }).toList(),
+      'name': name,
+      'items': jsonEncode(items.map((item) => item.toMap()).toList()),
     };
   }
 }
