@@ -14,7 +14,7 @@ class Space {
       required this.name,
       required this.items}); // Updated constructor
 
-  Space createEmptySpace({String newSpaceName = "default space"}) {
+  static Space createEmptySpace({String newSpaceName = "Default Space"}) {
     var uuid = const Uuid();
     String newSpaceId = uuid.v4(); // Generates a unique UUID
 

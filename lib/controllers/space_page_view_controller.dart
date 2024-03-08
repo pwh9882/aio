@@ -1,37 +1,105 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:aio/models/space.dart';
+import 'package:aio/services/dao/space_dao.dart';
 
 class SpacePageViewController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+    with GetTickerProviderStateMixin {
+  // Replace GetSingleTickerProviderStateMixin with GetTickerProviderStateMixin
   late PageController pageViewController;
-  late TabController tabController;
-  var currentPageIndex = 0.obs;
+  late TabController spaceTabController;
+  // Add a variable to track if a page transition is in progress
+  var isTransitioning = false.obs;
+
+  var currentSpaceIndex = 0.obs;
+  var spaces = <Space>[].obs;
+
+  final SpaceDAO spaceDAO = SpaceDAO();
 
   @override
   void onInit() {
     super.onInit();
     pageViewController = PageController();
-    tabController = TabController(length: 3, vsync: this);
+    spaceTabController = TabController(length: 3, vsync: this);
+    loadSpaces();
   }
 
   @override
   void onClose() {
     pageViewController.dispose();
-    tabController.dispose();
+    spaceTabController.dispose();
     super.onClose();
   }
 
   void updateCurrentPageIndex(int index) {
-    currentPageIndex.value = index;
-    tabController.index = index;
+    currentSpaceIndex.value = index;
+    spaceTabController.index =
+        index >= 0 && index < spaceTabController.length ? index : 0;
   }
 
   void animateToPage(int index) {
-    pageViewController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeInOut,
-    );
+    if (isTransitioning.value) {
+      return; // Prevent new transitions if one is ongoing
+    }
+
+    isTransitioning.value = true; // Set to true before starting transition
+    pageViewController
+        .animateToPage(
+          index,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        )
+        .then((_) => isTransitioning.value =
+            false); // Set back to false after transition
     updateCurrentPageIndex(index);
+  }
+
+  Future<void> loadSpaces() async {
+    var loadedSpaces = await spaceDAO.getAllSpaces();
+    spaces.assignAll(loadedSpaces);
+    // Update TabController length based on the number of spaces loaded
+    spaceTabController = TabController(length: spaces.length, vsync: this);
+  }
+
+  // create a new empty space
+  Future<void> createSpace() async {
+    var newSpace =
+        Space.createEmptySpace(newSpaceName: "Space ${spaces.length + 1}");
+    spaces.add(newSpace);
+    spaceDAO.insertSpace(newSpace);
+    spaceTabController = TabController(length: spaces.length, vsync: this);
+  }
+
+  // edit current space
+  Future<void> editSpace() async {
+    debugPrint('editSpace');
+    var space = spaces[currentSpaceIndex.value];
+    spaceDAO.updateSpace(space);
+  }
+
+  Future<void> deleteSpace() async {
+    debugPrint('deleteSpace');
+    var space = spaces[currentSpaceIndex.value];
+    await spaceDAO.deleteSpaceById(space.id);
+    spaces.removeAt(currentSpaceIndex.value);
+
+    if (spaces.isNotEmpty) {
+      int newIndex;
+      if (currentSpaceIndex.value < spaces.length) {
+        // 삭제된 공간이 마지막이 아니면 현재 인덱스 유지
+        newIndex = currentSpaceIndex.value;
+      } else {
+        // 삭제된 공간이 마지막 공간이면 왼쪽 공간으로 이동
+        newIndex = spaces.length - 1;
+      }
+      currentSpaceIndex.value = newIndex;
+      spaceTabController = TabController(length: spaces.length, vsync: this);
+      animateToPage(newIndex);
+    } else {
+      // 공간이 하나도 없으면 새 공간을 생성
+      await createSpace();
+    }
   }
 }

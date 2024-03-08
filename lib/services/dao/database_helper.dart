@@ -22,10 +22,31 @@ class DatabaseHelper {
   }
 
   Future _createDB(Database db, int version) async {
-    // Add table creation logic here
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS spaces (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      items TEXT
+    )
+  ''');
+
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS folders (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      items TEXT
+    )
+  ''');
+
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS tabs (
+      id TEXT PRIMARY KEY,
+      title TEXT,
+      url TEXT
+    )
+  ''');
   }
 
-  // Close the database
   Future close() async {
     final db = await instance.database;
     db.close();

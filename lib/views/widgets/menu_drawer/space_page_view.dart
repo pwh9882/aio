@@ -11,27 +11,21 @@ class SpacePageView extends StatelessWidget {
         Get.find<SpacePageViewController>();
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: <Widget>[
-        PageView(
-          controller: controller.pageViewController,
-          onPageChanged: controller.updateCurrentPageIndex,
+    return Obx(() => Stack(
+          alignment: Alignment.bottomCenter,
           children: <Widget>[
-            Center(
-              child: Text('First Page', style: textTheme.titleLarge),
+            PageView(
+              controller: controller.pageViewController,
+              onPageChanged: controller.updateCurrentPageIndex,
+              children: controller.spaces
+                  .map((space) => Center(
+                        child: Text(space.name, style: textTheme.titleLarge),
+                      ))
+                  .toList(),
             ),
-            Center(
-              child: Text('Second Page', style: textTheme.titleLarge),
-            ),
-            Center(
-              child: Text('Third Page', style: textTheme.titleLarge),
-            ),
+            PageIndicator(controller: controller),
           ],
-        ),
-        PageIndicator(controller: controller),
-      ],
-    );
+        ));
   }
 }
 
@@ -52,27 +46,30 @@ class PageIndicator extends StatelessWidget {
           Obx(() => IconButton(
                 splashRadius: 16.0,
                 padding: EdgeInsets.zero,
-                onPressed: controller.currentPageIndex.value == 0
+                onPressed: controller.currentSpaceIndex.value == 0 ||
+                        controller.spaceTabController.length <= 1
                     ? null
                     : () => controller
-                        .animateToPage(controller.currentPageIndex.value - 1),
+                        .animateToPage(controller.currentSpaceIndex.value - 1),
                 icon: const Icon(
                   Icons.arrow_left_rounded,
                   size: 32.0,
                 ),
               )),
           TabPageSelector(
-            controller: controller.tabController,
+            controller: controller.spaceTabController,
             color: colorScheme.background,
             selectedColor: colorScheme.primary,
           ),
           Obx(() => IconButton(
                 splashRadius: 16.0,
                 padding: EdgeInsets.zero,
-                onPressed: controller.currentPageIndex.value == 2
+                onPressed: controller.currentSpaceIndex.value ==
+                            controller.spaceTabController.length - 1 ||
+                        controller.spaceTabController.length <= 1
                     ? null
                     : () => controller
-                        .animateToPage(controller.currentPageIndex.value + 1),
+                        .animateToPage(controller.currentSpaceIndex.value + 1),
                 icon: const Icon(
                   Icons.arrow_right_rounded,
                   size: 32.0,

@@ -1,5 +1,8 @@
+import 'package:aio/controllers/space_page_view_controller.dart';
+import 'package:aio/models/space.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path/path.dart';
 
 class MenuTopBar extends StatelessWidget {
   const MenuTopBar({
@@ -8,6 +11,8 @@ class MenuTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final SpacePageViewController spacePageViewController =
+        Get.find<SpacePageViewController>();
     return Container(
       color: context.theme.colorScheme.onSecondary,
       padding: const EdgeInsets.only(top: 20, left: 5, right: 5),
@@ -25,19 +30,23 @@ class MenuTopBar extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Text(
-              textAlign: TextAlign.center,
-              "AIO",
-              style: TextStyle(
-                color: context.theme.colorScheme.onBackground,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: Obx(() => Center(
+                  child: Text(
+                    style: context.theme.textTheme.titleLarge,
+                    spacePageViewController.spaces.isNotEmpty
+                        ? spacePageViewController
+                            .spaces[
+                                spacePageViewController.currentSpaceIndex.value]
+                            .name
+                        : 'Default Space Name', // 또는 적절한 기본 값
+                  ),
+                )),
           ),
           IconButton(
-            // temp
-            onPressed: () {},
+            // temp space delete
+            onPressed: () {
+              spacePageViewController.deleteSpace();
+            },
             icon: Icon(
               Icons.edit,
               color: context.theme.colorScheme.onBackground,

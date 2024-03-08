@@ -28,7 +28,6 @@ class SpaceDAO {
   Future<Space> getSpaceById(String spaceId) async {
     final db = await dbProvider.database;
 
-    // Get the space record
     final List<Map<String, dynamic>> spaceMaps = await db.query(
       'spaces',
       where: 'id = ?',
@@ -41,19 +40,21 @@ class SpaceDAO {
 
     final spaceMap = spaceMaps.first;
 
-    var itemIds = spaceMap['items'] as List<Map<String, dynamic>>;
-
+    // 안전한 형 변환
     var items = <SpaceItem>[];
-    for (var item in itemIds) {
-      String itemType = item['type'];
-      String itemId = item['reference_id'];
+    if (spaceMap['items'] != null && spaceMap['items'] is List) {
+      var itemIds = List<Map<String, dynamic>>.from(spaceMap['items']);
+      for (var item in itemIds) {
+        String itemType = item['type'];
+        String itemId = item['reference_id'];
 
-      if (itemType == 'SpaceItemType.tab') {
-        var tab = await TabDAO().getTabById(itemId);
-        items.add(tab);
-      } else if (itemType == 'SpaceItemType.folder') {
-        var childFolder = await FolderDAO().getFolderById(itemId);
-        items.add(childFolder);
+        if (itemType == 'SpaceItemType.tab') {
+          var tab = await TabDAO().getTabById(itemId);
+          items.add(tab);
+        } else if (itemType == 'SpaceItemType.folder') {
+          var childFolder = await FolderDAO().getFolderById(itemId);
+          items.add(childFolder);
+        }
       }
     }
 
@@ -68,9 +69,16 @@ class SpaceDAO {
     final List<Map<String, dynamic>> spaceMaps = await db.query('spaces');
 
     var spaces = <Space>[];
-    for (var spaceMap in spaceMaps) {
-      var space = await getSpaceById(spaceMap['id']);
-      spaces.add(space);
+    if (spaceMaps.isEmpty) {
+      // Add a default empty space if spaces is empty
+      var defaultSpace = Space(id: 'default', name: 'Default Space', items: []);
+      await insertSpace(defaultSpace);
+      spaces.add(defaultSpace);
+    } else {
+      for (var spaceMap in spaceMaps) {
+        var space = await getSpaceById(spaceMap['id']);
+        spaces.add(space);
+      }
     }
 
     return spaces;
