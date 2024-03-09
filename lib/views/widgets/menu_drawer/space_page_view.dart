@@ -1,4 +1,6 @@
 import 'package:aio/controllers/space_page_view_controller.dart';
+import 'package:aio/views/widgets/menu_drawer/create_space_page.dart';
+import 'package:aio/views/widgets/menu_drawer/space_items_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,23 +11,38 @@ class SpacePageView extends StatelessWidget {
   Widget build(BuildContext context) {
     final SpacePageViewController controller =
         Get.find<SpacePageViewController>();
-    final TextTheme textTheme = Theme.of(context).textTheme;
 
-    return Obx(() => Stack(
-          alignment: Alignment.bottomCenter,
-          children: <Widget>[
-            PageView(
-              controller: controller.pageViewController,
-              onPageChanged: controller.updateCurrentPageIndex,
-              children: controller.spaces
-                  .map((space) => Center(
-                        child: Text(space.name, style: textTheme.titleLarge),
-                      ))
-                  .toList(),
-            ),
-            PageIndicator(controller: controller),
-          ],
-        ));
+    return Obx(() {
+      var showCreateSpacePage = controller.showCreateSpacePage.value;
+
+      return Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          PageView(
+            controller: controller.pageViewController,
+            onPageChanged: controller.updateCurrentPageIndex,
+            children: controller.spaces.map((space) {
+              if (showCreateSpacePage && space.name == "Create New Space") {
+                return Center(
+                  child: CreateSpacePage(
+                    onConfirm: (name) {
+                      space.name = name;
+                      controller.createSpace(space);
+                    },
+                    onCancel: () {
+                      controller.cancelCreateSpacePage();
+                    },
+                  ),
+                );
+              } else {
+                return const SpaceItemsListView();
+              }
+            }).toList(),
+          ),
+          PageIndicator(controller: controller),
+        ],
+      );
+    });
   }
 }
 

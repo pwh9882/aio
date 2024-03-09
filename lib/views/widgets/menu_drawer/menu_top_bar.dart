@@ -34,10 +34,12 @@ class MenuTopBar extends StatelessWidget {
                   child: Text(
                     style: context.theme.textTheme.titleLarge,
                     spacePageViewController.spaces.isNotEmpty
-                        ? spacePageViewController
-                            .spaces[
-                                spacePageViewController.currentSpaceIndex.value]
-                            .name
+                        ? spacePageViewController.showCreateSpacePage.value
+                            ? 'Create New Space'
+                            : spacePageViewController
+                                .spaces[spacePageViewController
+                                    .currentSpaceIndex.value]
+                                .name
                         : 'Default Space Name', // 또는 적절한 기본 값
                   ),
                 )),

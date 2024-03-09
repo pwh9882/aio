@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:aio/models/space.dart';
@@ -12,6 +10,8 @@ class SpacePageViewController extends GetxController
   late TabController spaceTabController;
   // Add a variable to track if a page transition is in progress
   var isTransitioning = false.obs;
+
+  var showCreateSpacePage = false.obs;
 
   var currentSpaceIndex = 0.obs;
   var spaces = <Space>[].obs;
@@ -45,15 +45,16 @@ class SpacePageViewController extends GetxController
     }
 
     isTransitioning.value = true; // Set to true before starting transition
+    updateCurrentPageIndex(index);
     pageViewController
         .animateToPage(
-          index,
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeInOut,
-        )
-        .then((_) => isTransitioning.value =
-            false); // Set back to false after transition
-    updateCurrentPageIndex(index);
+      index,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    )
+        .then((_) {
+      isTransitioning.value = false;
+    }); // Set back to false after transition
   }
 
   Future<void> loadSpaces() async {
@@ -63,13 +64,31 @@ class SpacePageViewController extends GetxController
     spaceTabController = TabController(length: spaces.length, vsync: this);
   }
 
-  // create a new empty space
-  Future<void> createSpace() async {
-    var newSpace =
-        Space.createEmptySpace(newSpaceName: "Space ${spaces.length + 1}");
-    spaces.add(newSpace);
-    spaceDAO.insertSpace(newSpace);
+  void addCreateSpacePage() {
+    showCreateSpacePage.value = true;
+    spaces.add(Space.createEmptySpace(newSpaceName: "Create New Space"));
     spaceTabController = TabController(length: spaces.length, vsync: this);
+    animateToPage(spaces.length - 1);
+  }
+
+  void completeCreateSpacePage() {
+    showCreateSpacePage.value = false;
+  }
+
+  void cancelCreateSpacePage() {
+    animateToPage(spaces.length - 2);
+    showCreateSpacePage.value = false;
+    spaces.removeLast();
+    spaceTabController = TabController(length: spaces.length, vsync: this);
+  }
+
+  // create a new empty space
+  // Update createSpace to include a name parameter
+  Future<void> createSpace(Space newSpace) async {
+    spaceDAO.insertSpace(newSpace);
+    // spaceTabController = TabController(length: spaces.length, vsync: this);
+    completeCreateSpacePage();
+    currentSpaceIndex.value = spaces.length - 1;
   }
 
   // edit current space
@@ -99,7 +118,8 @@ class SpacePageViewController extends GetxController
       animateToPage(newIndex);
     } else {
       // 공간이 하나도 없으면 새 공간을 생성
-      await createSpace();
+      var defaultSpace = Space.createEmptySpace(newSpaceName: "default space");
+      await createSpace(defaultSpace);
     }
   }
 }

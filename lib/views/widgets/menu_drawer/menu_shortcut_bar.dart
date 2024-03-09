@@ -1,5 +1,4 @@
 import 'package:aio/controllers/space_page_view_controller.dart';
-import 'package:aio/views/widgets/menu_drawer/space_page_view.dart';
 import 'package:aio/views/widgets/menu_drawer/theme_change_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -73,11 +72,11 @@ class MenuShortcutBar extends StatelessWidget {
                 value: SampleItem.itemOne,
                 child: const Text('Create New Space'),
                 onTap: () => {
-                  debugPrint('Create New Space'),
-                  spacePageViewController.createSpace(),
-                  // 새로운 space을 생성하고, 해당 space으로 이동
-                  spacePageViewController
-                      .animateToPage(spacePageViewController.spaces.length - 1),
+                  if (!spacePageViewController.showCreateSpacePage.value)
+                    {
+                      debugPrint('Create New Space'),
+                      spacePageViewController.addCreateSpacePage(),
+                    }
                 },
               ),
               PopupMenuItem<SampleItem>(
