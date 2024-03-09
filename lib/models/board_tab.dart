@@ -3,7 +3,8 @@ import 'package:aio/models/space_item.dart';
 class BoardTab implements SpaceItem {
   @override
   final String id;
-  String title;
+  @override
+  String name;
   String url;
 
   String boardType;
@@ -13,7 +14,7 @@ class BoardTab implements SpaceItem {
 
   BoardTab({
     required this.id,
-    required this.title,
+    required this.name,
     required this.url,
     required this.boardType,
     required this.boardInfo,
@@ -26,7 +27,7 @@ class BoardTab implements SpaceItem {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'title': title,
+      'name': name,
       'url': url,
       'boardType': boardType,
       'boardInfo': boardInfo,

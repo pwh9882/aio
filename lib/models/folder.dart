@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 class Folder implements SpaceItem {
   @override
   final String id;
+  @override
   String name;
 
   // db에 저장되될 때는 id값만 저장됨.

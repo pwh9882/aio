@@ -91,6 +91,7 @@ class MenuShortcutBar extends StatelessWidget {
                 child: const Text('Create New Tab'),
                 onTap: () => {
                   debugPrint('Create New Tab'),
+                  spacePageViewController.createWebviewTabItem(),
                 },
               ),
             ],

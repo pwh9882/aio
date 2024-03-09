@@ -33,6 +33,7 @@ class DatabaseHelper {
     await db.execute('''
     CREATE TABLE IF NOT EXISTS folders (
       id TEXT PRIMARY KEY,
+      type TEXT,
       name TEXT,
       items TEXT
     )
@@ -41,7 +42,8 @@ class DatabaseHelper {
     await db.execute('''
     CREATE TABLE IF NOT EXISTS tabs (
       id TEXT PRIMARY KEY,
-      title TEXT,
+      type TEXT,
+      name TEXT,
       url TEXT
     )
   ''');

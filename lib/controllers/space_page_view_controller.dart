@@ -1,3 +1,8 @@
+import 'package:aio/models/folder.dart';
+import 'package:aio/models/space_item.dart';
+import 'package:aio/models/webview_tab.dart';
+import 'package:aio/services/dao/folder_dao.dart';
+import 'package:aio/services/dao/webview_tab_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:aio/models/space.dart';
@@ -17,6 +22,8 @@ class SpacePageViewController extends GetxController
   var spaces = <Space>[].obs;
 
   final SpaceDAO spaceDAO = SpaceDAO();
+  final WebviewTabDAO webviewTabDAO = WebviewTabDAO();
+  final folderDAO = FolderDAO();
 
   @override
   void onInit() {
@@ -121,5 +128,64 @@ class SpacePageViewController extends GetxController
       var defaultSpace = Space.createEmptySpace(newSpaceName: "default space");
       await createSpace(defaultSpace);
     }
+  }
+
+  void reorderSpaceItems(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    final item = spaces[currentSpaceIndex.value].items.removeAt(oldIndex);
+    spaces[currentSpaceIndex.value].items.insert(newIndex, item);
+    spaceDAO.updateSpace(spaces[currentSpaceIndex.value]);
+    spaces.refresh();
+  }
+
+  void createWebviewTabItem() {
+    var space = spaces[currentSpaceIndex.value];
+    WebviewTab newTab =
+        WebviewTab.createNewTab(name: "tab ${space.items.length.toString()}");
+    space.items.add(newTab);
+    webviewTabDAO.insertTab(newTab);
+    spaceDAO.updateSpace(space);
+    spaces.refresh();
+  }
+
+  void deleteSpaceItem(int index) {
+    var space = spaces[currentSpaceIndex.value];
+    var item = space.items[index];
+    if (item is WebviewTab) {
+      webviewTabDAO.deleteTabById(item.id);
+    } else if (item is Folder) {
+      folderDAO.deleteFolderById(item.id);
+    }
+    space.items.removeAt(index);
+    spaceDAO.updateSpace(space);
+    spaces.refresh();
+  }
+
+  void updateSpaceItem(int index, SpaceItem item) {
+    var space = spaces[currentSpaceIndex.value];
+
+    if (item is WebviewTab) {
+      webviewTabDAO.updateTab(item);
+    } else if (item is Folder) {
+      folderDAO.updateFolder(item);
+    }
+
+    space.items[index] = item;
+    spaceDAO.updateSpace(space);
+    spaces.refresh();
+  }
+
+  void selectSpaceItem(int spaceIndex, SpaceItem item) {
+    var space = spaces[spaceIndex];
+    space.lastSelectedItem = item;
+    updateSpace(spaceIndex, space); // 공간 업데이트 메서드를 호출
+  }
+
+  void updateSpace(int spaceIndex, Space space) {
+    spaces[spaceIndex] = space;
+    spaces.refresh();
+    spaceDAO.updateSpace(space);
   }
 }

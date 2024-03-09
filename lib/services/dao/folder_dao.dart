@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:aio/models/folder.dart';
 import 'package:aio/models/space_item.dart';
 import 'package:aio/services/dao/database_helper.dart';
-import 'package:aio/services/dao/tab_dao.dart';
+import 'package:aio/services/dao/webview_tab_dao.dart';
 
 class FolderDAO {
   final dbProvider = DatabaseHelper.instance;
@@ -41,7 +41,7 @@ class FolderDAO {
         String itemId = item['reference_id'];
 
         if (itemType == 'SpaceItemType.tab') {
-          var tab = await TabDAO().getTabById(itemId);
+          var tab = await WebviewTabDAO().getTabById(itemId);
           items.add(tab);
         } else if (itemType == 'SpaceItemType.folder') {
           var folder = await FolderDAO().getFolderById(itemId);
@@ -81,7 +81,7 @@ class FolderDAO {
     // Delete each child item
     for (var item in folder.items) {
       if (item.type == SpaceItemType.tab) {
-        await TabDAO().deleteTabById(item.id);
+        await WebviewTabDAO().deleteTabById(item.id);
       } else if (item.type == SpaceItemType.folder) {
         await deleteFolderById(item.id); // Recursive call for child folders
       }

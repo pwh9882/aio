@@ -35,7 +35,8 @@ class SpacePageView extends StatelessWidget {
                   ),
                 );
               } else {
-                return const SpaceItemsListView();
+                return SpaceItemsListView(
+                    index: controller.spaces.indexOf(space));
               }
             }).toList(),
           ),

@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:aio/models/space.dart';
 import 'package:aio/models/space_item.dart';
 import 'package:aio/models/folder.dart';
-import 'package:aio/models/tab.dart';
+import 'package:aio/models/webview_tab.dart';
 import 'package:aio/services/dao/database_helper.dart';
 import 'package:aio/services/dao/folder_dao.dart';
-import 'package:aio/services/dao/tab_dao.dart';
+import 'package:aio/services/dao/webview_tab_dao.dart';
 
 class SpaceDAO {
   final DatabaseHelper dbProvider = DatabaseHelper.instance;
@@ -35,10 +35,10 @@ class SpaceDAO {
       var itemData = jsonDecode(spaceMap['items']) as List;
       for (var item in itemData) {
         String itemType = item['type'];
-        String itemId = item['reference_id'];
+        String itemId = item['id'];
 
         if (itemType == 'SpaceItemType.tab') {
-          var tab = await TabDAO().getTabById(itemId);
+          var tab = await WebviewTabDAO().getTabById(itemId);
           items.add(tab);
         } else if (itemType == 'SpaceItemType.folder') {
           var folder = await FolderDAO().getFolderById(itemId);
@@ -91,8 +91,8 @@ class SpaceDAO {
     for (var item in space.items) {
       if (item is Folder) {
         await FolderDAO().deleteFolderById(item.id);
-      } else if (item is Tab) {
-        await TabDAO().deleteTabById(item.id);
+      } else if (item is WebviewTab) {
+        await WebviewTabDAO().deleteTabById(item.id);
       }
       // Handle other SpaceItem types here
     }

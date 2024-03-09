@@ -1,17 +1,17 @@
-import 'package:aio/models/tab.dart';
+import 'package:aio/models/webview_tab.dart';
 import 'package:aio/services/dao/database_helper.dart';
 
-class TabDAO {
+class WebviewTabDAO {
   final dbProvider = DatabaseHelper.instance;
 
   // Insert
-  Future<int> insertTab(Tab tab) async {
+  Future<int> insertTab(WebviewTab tab) async {
     final db = await dbProvider.database;
     return await db.insert('tabs', tab.toMap());
   }
 
   // get tab by id
-  Future<Tab> getTabById(String id) async {
+  Future<WebviewTab> getTabById(String id) async {
     final db = await dbProvider.database;
     final List<Map<String, dynamic>> maps = await db.query(
       'tabs',
@@ -19,15 +19,15 @@ class TabDAO {
       whereArgs: [id],
     );
 
-    return Tab(
+    return WebviewTab(
       id: maps[0]['id'],
-      title: maps[0]['title'],
+      name: maps[0]['name'],
       url: maps[0]['url'],
     );
   }
 
   // Update
-  Future<int> updateTab(Tab tab) async {
+  Future<int> updateTab(WebviewTab tab) async {
     final db = await dbProvider.database;
     return await db.update(
       'tabs',
