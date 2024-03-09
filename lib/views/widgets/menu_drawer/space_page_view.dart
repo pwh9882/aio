@@ -12,9 +12,11 @@ class SpacePageView extends StatelessWidget {
     final SpacePageViewController controller =
         Get.find<SpacePageViewController>();
 
+    controller.pageViewController =
+        PageController(initialPage: controller.currentSpaceIndex.value);
+
     return Obx(() {
       var showCreateSpacePage = controller.showCreateSpacePage.value;
-
       return Stack(
         alignment: Alignment.bottomCenter,
         children: <Widget>[
